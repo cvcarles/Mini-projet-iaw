@@ -12,17 +12,16 @@ import java.io.File;
 			
 		}
 		public int entier;
-		private File file;		// de type File contenu dans le package java.io.File
 		public int i=0;
 		public int j=0;
+		public File file;
+
 
 		
 		
 		
 		
-		private void writeline(File files) {
-		      os.println(file);
-		  }			
+					
 	private void ecrit(String url) throws IOException{
 		FileInputStream f=new FileInputStream(""+url);
 		byte[] b=new byte[8];
@@ -63,7 +62,6 @@ import java.io.File;
 			
 		
 		public void repRequete(Requete req) throws IOException{
-
 			if (entier==1){																			// si l'URL est /date
 				SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd MMM yyyy HH:mm:ss");
 				Date date = new Date();
@@ -114,6 +112,8 @@ import java.io.File;
 		
 		}
 				
+	
+		
 
 		public Requete getRequete() throws IOException{
 			String[] mots;
@@ -121,7 +121,7 @@ import java.io.File;
 			if (ligne == null) return null;
 			if (ligne.isEmpty()) return null;
 			mots=ligne.split(" ");								//  créer un tableau en sérapant par en fonction des espaces
-			file = new File(mots[1]);							// file correspond au deuxième 
+			file = new File(mots[1]);		// file correspond au deuxième / de type File contenu dans le package java.io.File
 			if (mots.length>1){
 				if (!mots[0].equals("GET") && !mots[0].equals("POST")){
 					return null;
@@ -136,14 +136,14 @@ import java.io.File;
 				entier=1;
 			}
 			else if (Pattern .compile(".*/mon-cgi/.*.sh$").matcher(mots[1]).find()){ // en cas de shell passé en url
-				
+			
 					writeline("HTTP/1.0 200 OK");
 					shell(""+file);
-
+					entier=11;
 			
 			}
 			
-			else if (Pattern .compile(".mon-cgi/.*.sh?").matcher(mots[1]).find()){ // en cas de shell avec des paramètres
+			else if (Pattern .compile(".mon-cgi/.*.sh\\?").matcher(mots[1]).find()){ // en cas de shell avec des paramètres
 				
 				writeline("HTTP/1.0 200 OK");
 				String[] var = mots[1].split("\\?");		//mot[1] l'url entière
@@ -157,12 +157,11 @@ import java.io.File;
 
 		}
 				shell(resultat); //lancer le shell avec des paramètres ex  var[0] le débute de l'url val[0]=mode et val[1]=cowthink
-
+				entier=11;			// de manière à éviter qu'il ne le considère comme un répertoire
 				}
 
 
 				
-		
 			else if (file.exists() && file.isDirectory()){		// vérifie que le répertoire existe
 				entier=2;
 				}	
